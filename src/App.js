@@ -21,6 +21,7 @@ export default function App() {
         setOutput(data.rates[toCurrency]);
         setIsLoading(false);
       }
+      if (fromCurrency === toCurrency) return setOutput(amount); //Same curency handling
       convert();
     },
     [amount, fromCurrency, toCurrency]
