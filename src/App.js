@@ -7,17 +7,21 @@ export default function App() {
   const [amount, setAmount] = useState(1);
   const [fromCurrency, setFromCurrency] = useState("EUR");
   const [toCurrency, setToCurrency] = useState("USD");
+  const [output, setOutput] = useState("");
 
-  useEffect(function () {
-    async function convert() {
-      const res = await fetch(
-        `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`
-      );
-      const data = await res.json();
-      console.log(data);
-    }
-    convert();
-  }, []);
+  useEffect(
+    function () {
+      async function convert() {
+        const res = await fetch(
+          `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`
+        );
+        const data = await res.json();
+        setOutput(data.rates[toCurrency]);
+      }
+      convert();
+    },
+    [amount, fromCurrency, toCurrency]
+  );
 
   return (
     <div className="box">
@@ -48,7 +52,9 @@ export default function App() {
         </select>
       </div>
 
-      <p>OUTPUT</p>
+      <p>
+        {output} {toCurrency}
+      </p>
     </div>
   );
 }
