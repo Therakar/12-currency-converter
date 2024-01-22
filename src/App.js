@@ -8,15 +8,18 @@ export default function App() {
   const [fromCurrency, setFromCurrency] = useState("EUR");
   const [toCurrency, setToCurrency] = useState("USD");
   const [output, setOutput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(
     function () {
       async function convert() {
+        setIsLoading(true);
         const res = await fetch(
           `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}`
         );
         const data = await res.json();
         setOutput(data.rates[toCurrency]);
+        setIsLoading(false);
       }
       convert();
     },
@@ -31,10 +34,12 @@ export default function App() {
           type="text"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
+          disabled={isLoading}
         />
         <select
           value={fromCurrency}
           onChange={(e) => setFromCurrency(e.target.value)}
+          disabled={isLoading}
         >
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
@@ -44,6 +49,7 @@ export default function App() {
         <select
           value={toCurrency}
           onChange={(e) => setToCurrency(e.target.value)}
+          disabled={isLoading}
         >
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
@@ -51,10 +57,13 @@ export default function App() {
           <option value="INR">INR</option>
         </select>
       </div>
-
-      <p>
-        {output} {toCurrency}
-      </p>
+      {isLoading ? (
+        <p>CALCULATING...</p>
+      ) : (
+        <p>
+          {output} {toCurrency}
+        </p>
+      )}
     </div>
   );
 }
